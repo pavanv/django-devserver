@@ -12,7 +12,11 @@ except ImportError:
     from django.db import connection
     connections = {'default': connection}
 
-from django.db.backends import util
+try:
+    from django.db.backends import utils as util
+except ImportError:
+    from django.db.backends import util  # noqa
+
 from django.conf import settings as django_settings
 #from django.template import Node
 
