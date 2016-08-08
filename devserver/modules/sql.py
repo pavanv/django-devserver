@@ -18,10 +18,8 @@ except ImportError:
     from django.db.backends import util  # noqa
 
 from django.conf import settings as django_settings
-#from django.template import Node
 
 from devserver.modules import DevServerModule
-#from devserver.utils.stack import tidy_stacktrace, get_template_info
 from devserver.utils.time import ms_from_timedelta
 from devserver import settings
 
@@ -49,19 +47,18 @@ def truncate_sql(sql, aggregates=True):
 #                             .get('SQL_WARNING_THRESHOLD', 500)
 
 try:
-    from debug_toolbar.panels.sql import DatabaseStatTracker
+    from debug_toolbar.panels.sql import DatabaseStatTracker as BaseDatabaseStatTracker
     debug_toolbar = True
 except ImportError:
     debug_toolbar = False
     import django
-    version = float('.'.join([str(x) for x in django.VERSION[:2]]))
-    if version >= 1.6:
-        DatabaseStatTracker = util.CursorWrapper
+    if django.VERSION >= (1, 6):
+        BaseDatabaseStatTracker = util.CursorWrapper
     else:
-        DatabaseStatTracker = util.CursorDebugWrapper
+        BaseDatabaseStatTracker = util.CursorDebugWrapper
 
 
-class DatabaseStatTracker(DatabaseStatTracker):
+class DatabaseStatTracker(BaseDatabaseStatTracker):
     """
     Replacement for CursorDebugWrapper which outputs information as it happens.
     """
