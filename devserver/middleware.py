@@ -1,7 +1,13 @@
 from devserver.models import MODULES
+import django
+
+super_class = object
+if django.VERSION >= (1, 10):
+    from django.utils.deprecation import MiddlewareMixin
+    super_class = MiddlewareMixin
 
 
-class DevServerMiddleware(object):
+class DevServerMiddleware(super_class):
     def should_process(self, request):
         from django.conf import settings
 
